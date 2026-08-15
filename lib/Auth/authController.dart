@@ -24,26 +24,13 @@ class Authcontroller extends GetxController {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
-  Future<bool> signup({
-    required String name,
-    required String email,
-    required String password,
-    required String confirmPassword,
-  }) async {
+  Future<bool> signup({required String name, required String email, required String password, required String confirmPassword}) async {
     try {
       isLoading.value = true;
 
-      signupRequest = SignupRequest(
-        name: name,
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword,
-      );
+      signupRequest = SignupRequest(name: name, email: email, password: password, confirmPassword: confirmPassword);
 
-      final response = await _apiClient.postData(
-        '/api/signup',
-        signupRequest!.toJson(),
-      );
+      final response = await _apiClient.postData('/api/auth/signup', signupRequest!.toJson());
 
       if (response['token'] != null) {
         await sharedPreferences.setString('token', response['token']);
@@ -51,16 +38,11 @@ class Authcontroller extends GetxController {
 
       _saveUserFromResponse(response, fallbackName: name, fallbackEmail: email);
 
-      Get.snackbar(
-        'Success',
-        response['message'] ?? 'Account created successfully',
-      );
+      Get.snackbar('Success', response['message'] ?? 'Account created successfully');
       return true;
     } catch (e) {
-      Get.snackbar(
-        'Signup Failed',
-        e.toString().replaceFirst('Exception: ', ''),
-      );
+      Get.snackbar('Signup Failed', e.toString().replaceFirst('Exception: ', ''));
+      print(e);
       return false;
     } finally {
       isLoading.value = false;
@@ -73,10 +55,7 @@ class Authcontroller extends GetxController {
 
       loginRequest = LoginRequest(email: email, password: password);
 
-      final response = await _apiClient.postData(
-        '/api/login',
-        loginRequest!.toJson(),
-      );
+      final response = await _apiClient.postData('/api/auth/login', loginRequest!.toJson());
       print(response);
       if (response['token'] != null) {
         await sharedPreferences.setString('token', response['token']);
@@ -88,28 +67,17 @@ class Authcontroller extends GetxController {
       return true;
     } catch (e) {
       print(e);
-      Get.snackbar(
-        'Login Failed',
-        e.toString().replaceFirst('Exception: ', ''),
-      );
+      Get.snackbar('Login Failed', e.toString().replaceFirst('Exception: ', ''));
       return false;
     } finally {
       isLoading.value = false;
     }
   }
 
-  void _saveUserFromResponse(
-    Map<String, dynamic> response, {
-    String? fallbackName,
-    String? fallbackEmail,
-  }) {
+  void _saveUserFromResponse(Map<String, dynamic> response, {String? fallbackName, String? fallbackEmail}) {
     final user = response['user'];
-    final name = user is Map
-        ? user['name']?.toString()
-        : response['name']?.toString();
-    final email = user is Map
-        ? user['email']?.toString()
-        : response['email']?.toString();
+    final name = user is Map ? user['name']?.toString() : response['name']?.toString();
+    final email = user is Map ? user['email']?.toString() : response['email']?.toString();
 
     userName.value = (name ?? fallbackName ?? '').trim();
     userEmail.value = (email ?? fallbackEmail ?? '').trim();

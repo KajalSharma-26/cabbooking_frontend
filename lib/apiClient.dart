@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiClient {
-  static const String baseUrl = "http://localhost:3000";
+  static const String baseUrl = "http://localhost:3200";
 
   Future<dynamic> getData(String endpoint) async {
     try {
@@ -29,12 +29,22 @@ class ApiClient {
   }
 
   dynamic _handleResponse(http.Response response) {
-    final data = jsonDecode(response.body);
+    dynamic data;
+
+    try {
+      data = jsonDecode(response.body);
+    } catch (e) {
+      throw Exception("Invalid JSON response: ${response.body}");
+    }
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return data;
     }
 
-    throw Exception(data["message"] ?? "Something went wrong");
+    throw Exception(
+      data is Map && data["message"] != null
+          ? data["message"]
+          : "Something went wrong",
+    );
   }
 }

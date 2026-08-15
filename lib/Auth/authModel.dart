@@ -6,12 +6,7 @@ class SignupRequest {
 
   SignupRequest({this.name, this.email, this.password, this.confirmPassword});
 
-  SignupRequest copyWith({
-    String? name,
-    String? email,
-    String? password,
-    String? confirmPassword,
-  }) {
+  SignupRequest copyWith({String? name, String? email, String? password, String? confirmPassword}) {
     return SignupRequest(
       name: name ?? this.name,
       email: email ?? this.email,
@@ -30,12 +25,7 @@ class SignupRequest {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'email': email,
-      'password': password,
-      'confirmPassword': confirmPassword,
-    };
+    return {'name': name, 'email': email, 'password': password, 'confirmPassword': confirmPassword};
   }
 }
 
@@ -46,17 +36,11 @@ class LoginRequest {
   LoginRequest({this.email, this.password});
 
   LoginRequest copyWith({String? email, String? password}) {
-    return LoginRequest(
-      email: email ?? this.email,
-      password: password ?? this.password,
-    );
+    return LoginRequest(email: email ?? this.email, password: password ?? this.password);
   }
 
   factory LoginRequest.fromJson(Map<String, dynamic> json) {
-    return LoginRequest(
-      email: json['email'] as String?,
-      password: json['password'] as String?,
-    );
+    return LoginRequest(email: json['email'] as String?, password: json['password'] as String?);
   }
 
   Map<String, dynamic> toJson() {
