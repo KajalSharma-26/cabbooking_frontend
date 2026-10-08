@@ -33,5 +33,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
           port: ${{ secrets.FTP_PORT }}
-          server-dir: public_html/
+          server-dir: domains/nextlogicsolution.id/public_html/cabbooking/
           local-dir: build/web/
